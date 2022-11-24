@@ -2,6 +2,7 @@ const express = require('express')
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const app = express()
 const cors = require('cors');
+require('dotenv').config()
 
 const port = process.env.PORT || 5000;
 
@@ -15,18 +16,24 @@ app.get('/', (req, res) => {
 
 
 
-const uri = "mongodb+srv://ctg-car-service:paGE2yWHcZPD0pEi@cluster0.fgemqio.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.fgemqio.mongodb.net/?retryWrites=true&w=majority`;
+
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run() {
     try {
       
-        
+        const categoryCollection = client.db('ctg_mobile_resale-market').collection('mobile_category');
        
        
         
 
-      
+        app.get('/categories', async (req, res) => {
+            const query = {}
+            const categories =await categoryCollection.find(query).toArray();
+           
+            res.send(categories);
+        });
 
 
        
