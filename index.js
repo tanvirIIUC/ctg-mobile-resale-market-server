@@ -24,6 +24,7 @@ async function run() {
     try {
       
         const categoryCollection = client.db('ctg_mobile_resale-market').collection('mobile_category');
+        const mobileCollection = client.db('ctg_mobile_resale-market').collection('mobile_collection');
        
        
         
@@ -33,6 +34,15 @@ async function run() {
             const categories =await categoryCollection.find(query).toArray();
            
             res.send(categories);
+        });
+       
+          
+          app.get('/collection/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {category_id: id };
+           
+            const collections = await mobileCollection.find(query).toArray();
+            res.send(collections);
         });
 
 
