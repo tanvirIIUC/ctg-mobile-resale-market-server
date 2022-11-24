@@ -25,6 +25,7 @@ async function run() {
       
         const categoryCollection = client.db('ctg_mobile_resale-market').collection('mobile_category');
         const mobileCollection = client.db('ctg_mobile_resale-market').collection('mobile_collection');
+        const bookingCollection = client.db('ctg_mobile_resale-market').collection('book_collection');
        
        
         
@@ -44,6 +45,27 @@ async function run() {
             const collections = await mobileCollection.find(query).toArray();
             res.send(collections);
         });
+
+        app.post('/bookings', async (req, res) => {
+
+            const booking = req.body;
+            console.log(booking)
+
+            const query = {
+                
+                email: booking.email,
+                title: booking.title
+            }
+            const alreadyBooked = await bookingCollection.find(query).toArray();
+
+            if (alreadyBooked.length) {
+                const message = `you have already booking on ${booking.appointmentDate}`;
+                return res.send({ acknowledged: false, message })
+            }
+
+            const result = await bookingCollection.insertOne(booking);
+            res.send(result)
+        })
 
 
        
