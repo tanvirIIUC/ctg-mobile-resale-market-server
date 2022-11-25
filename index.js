@@ -84,6 +84,7 @@ async function run() {
             const result = await bookingCollection.find(query).toArray();
             res.send(result)
         })
+
         app.get('/myproducts', async (req, res) => {
 
             const email = req.query.email;
@@ -92,6 +93,16 @@ async function run() {
             const result = await mobileCollection.find(query).toArray();
             res.send(result)
         })
+        app.get('/user', async (req, res) => {
+
+            const email = req.query.email;
+            // console.log(email)
+            const query = { email: email }
+            const result = await usersCollection.find(query).toArray();
+            res.send(result)
+        })
+
+
         app.get('/allsellers', async (req, res) => {
 
             // console.log(email)
@@ -106,9 +117,6 @@ async function run() {
             const result = await usersCollection.find(query).toArray();
             res.send(result)
         })
-
-
-
 
     }
     finally {
