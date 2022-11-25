@@ -99,7 +99,13 @@ async function run() {
             const result = await usersCollection.find(query).toArray();
             res.send(result)
         })
-     
+        app.get('/allbuyers', async (req, res) => {
+
+            // console.log(email)
+            const query = { option: "user" }
+            const result = await usersCollection.find(query).toArray();
+            res.send(result)
+        })
 
 
 
