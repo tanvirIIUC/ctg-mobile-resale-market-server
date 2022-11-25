@@ -22,29 +22,36 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
     try {
-      
+
         const categoryCollection = client.db('ctg_mobile_resale-market').collection('mobile_category');
         const mobileCollection = client.db('ctg_mobile_resale-market').collection('mobile_collection');
         const bookingCollection = client.db('ctg_mobile_resale-market').collection('book_collection');
-       
-       
-        
+        const usersCollection = client.db('ctg_mobile_resale-market').collection('users');
+
+
+
 
         app.get('/categories', async (req, res) => {
             const query = {}
-            const categories =await categoryCollection.find(query).toArray();
-           
+            const categories = await categoryCollection.find(query).toArray();
+
             res.send(categories);
         });
-       
-          
-          app.get('/collection/:id', async (req, res) => {
+
+
+        app.get('/collection/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {category_id: id };
-           
+            const query = { category_id: id };
+
             const collections = await mobileCollection.find(query).toArray();
             res.send(collections);
         });
+
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            const result = await usersCollection.insertOne(user);
+            res.send(result)
+        })
 
         app.post('/bookings', async (req, res) => {
 
@@ -52,23 +59,33 @@ async function run() {
             console.log(booking)
 
             const query = {
+
                 
-                email: booking.email,
-                title: booking.title
+                mobileName: booking.mobileName
             }
             const alreadyBooked = await bookingCollection.find(query).toArray();
 
             if (alreadyBooked.length) {
-                const message = `you have already booking on ${booking.appointmentDate}`;
+                const message = "Sold Out !!!";
                 return res.send({ acknowledged: false, message })
             }
 
             const result = await bookingCollection.insertOne(booking);
             res.send(result)
+        });
+
+        app.get('/bookings', async (req, res) => {
+
+            const email = req.query.email;
+            // console.log(email)
+            const query = { email: email }
+            const result = await bookingCollection.find(query).toArray();
+            res.send(result)
         })
+        
 
 
-       
+
 
     }
     finally {
