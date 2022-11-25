@@ -56,7 +56,7 @@ async function run() {
         app.post('/bookings', async (req, res) => {
 
             const booking = req.body;
-            console.log(booking)
+            // console.log(booking)
 
             const query = {
 
@@ -74,15 +74,32 @@ async function run() {
             res.send(result)
         });
 
+       
+
         app.get('/bookings', async (req, res) => {
 
             const email = req.query.email;
-            // console.log(email)
+             console.log(email)
             const query = { email: email }
             const result = await bookingCollection.find(query).toArray();
             res.send(result)
         })
-        
+        app.get('/myproducts', async (req, res) => {
+
+            const email = req.query.email;
+            // console.log(email)
+            const query = { email: email }
+            const result = await mobileCollection.find(query).toArray();
+            res.send(result)
+        })
+        app.get('/allsellers', async (req, res) => {
+
+            // console.log(email)
+            const query = { option: "seller" }
+            const result = await usersCollection.find(query).toArray();
+            res.send(result)
+        })
+     
 
 
 
