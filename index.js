@@ -74,6 +74,15 @@ async function run() {
             res.send(result)
         });
 
+        
+        app.post('/addproduct', async (req, res) => {
+
+            const addproduct = req.body;
+            // console.log(booking)
+            const result = await mobileCollection.insertOne(addproduct);
+            res.send(result)
+        });
+
        
 
         app.get('/bookings', async (req, res) => {
@@ -93,6 +102,22 @@ async function run() {
             const result = await mobileCollection.find(query).toArray();
             res.send(result)
         })
+
+        app.put('/myproducts/:id', async (req, res) => {
+
+            const id = req.params.id;
+            const filter = {_id:ObjectId(id)};
+            const options = {upsert:true};
+            const updateDoc = {
+                $set:{
+                    advertise: 'add'
+                }
+            }
+            const result =  await mobileCollection.updateOne(filter,updateDoc,options)
+            res.send(result);
+
+        })
+
         app.get('/user', async (req, res) => {
 
             const email = req.query.email;
