@@ -161,6 +161,14 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/ads', async (req, res) => {
+
+            // console.log(email)
+            const query = { advertise: "add" }
+            const result = await mobileCollection.find(query).toArray();
+            res.send(result)
+        })
+
     }
     finally {
 
