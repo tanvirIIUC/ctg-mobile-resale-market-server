@@ -134,6 +134,14 @@ async function run() {
             const result = await bookingCollection.find(query).toArray();
             res.send(result)
         })
+        app.get('/report', async (req, res) => {
+
+            // const email = req.query.email;
+            //  console.log(email)
+            const query = { report: true }
+            const result = await mobileCollection.find(query).toArray();
+            res.send(result)
+        })
 
         app.get('/myproducts', async (req, res) => {
 
@@ -152,6 +160,20 @@ async function run() {
             const updateDoc = {
                 $set: {
                     advertise: 'add'
+                }
+            }
+            const result = await mobileCollection.updateOne(filter, updateDoc, options)
+            res.send(result);
+
+        })
+        app.put('/report/:id', async (req, res) => {
+
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    report: true
                 }
             }
             const result = await mobileCollection.updateOne(filter, updateDoc, options)
