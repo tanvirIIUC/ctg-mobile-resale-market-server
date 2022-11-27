@@ -60,7 +60,7 @@ async function run() {
 
             const query = {
 
-                
+
                 mobileName: booking.mobileName
             }
             const alreadyBooked = await bookingCollection.find(query).toArray();
@@ -74,7 +74,7 @@ async function run() {
             res.send(result)
         });
 
-        
+
         app.post('/addproduct', async (req, res) => {
 
             const addproduct = req.body;
@@ -83,12 +83,12 @@ async function run() {
             res.send(result)
         });
 
-       
+
 
         app.get('/bookings', async (req, res) => {
 
             const email = req.query.email;
-             console.log(email)
+            //  console.log(email)
             const query = { email: email }
             const result = await bookingCollection.find(query).toArray();
             res.send(result)
@@ -106,14 +106,43 @@ async function run() {
         app.put('/myproducts/:id', async (req, res) => {
 
             const id = req.params.id;
-            const filter = {_id:ObjectId(id)};
-            const options = {upsert:true};
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
             const updateDoc = {
-                $set:{
+                $set: {
                     advertise: 'add'
                 }
             }
-            const result =  await mobileCollection.updateOne(filter,updateDoc,options)
+            const result = await mobileCollection.updateOne(filter, updateDoc, options)
+            res.send(result);
+
+        })
+        app.put('/user/:id', async (req, res) => {
+
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    verify: 'verify'
+                }
+            }
+            const result = await usersCollection.updateOne(filter, updateDoc, options)
+            res.send(result);
+
+        })
+        app.put('/productver/', async (req, res) => {
+
+            const email = req.query.email;
+            const filter = { email: email }
+
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    verify: 'verify'
+                }
+            }
+            const result = await mobileCollection.updateMany(filter, updateDoc, options)
             res.send(result);
 
         })
@@ -126,6 +155,15 @@ async function run() {
             const result = await usersCollection.find(query).toArray();
             res.send(result)
         })
+        app.get('/userver', async (req, res) => {
+
+            const email = req.query.email;
+            // console.log(email)
+            const query = { email: email }
+            const result = await usersCollection.findOne(query);
+            res.send(result)
+        })
+
 
 
         app.get('/allsellers', async (req, res) => {
@@ -142,22 +180,28 @@ async function run() {
             const result = await usersCollection.find(query).toArray();
             res.send(result)
         })
-        app.delete('/product/:id', async(req,res)=>{
+        app.delete('/product/:id', async (req, res) => {
             const id = req.params.id;
-            const filter = {_id: ObjectId(id)};
+            const filter = { _id: ObjectId(id) };
             const result = await mobileCollection.deleteOne(filter);
             res.send(result);
         })
-        app.delete('/buyer/:id', async(req,res)=>{
+        app.delete('/buyer/:id', async (req, res) => {
             const id = req.params.id;
-            const filter = {_id: ObjectId(id)};
+            const filter = { _id: ObjectId(id) };
             const result = await usersCollection.deleteOne(filter);
             res.send(result);
         })
-        app.delete('/seller/:id', async(req,res)=>{
+        app.delete('/seller/:id', async (req, res) => {
             const id = req.params.id;
-            const filter = {_id: ObjectId(id)};
+            const filter = { _id: ObjectId(id) };
             const result = await usersCollection.deleteOne(filter);
+            res.send(result);
+        })
+        app.delete('/bookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await bookingCollection.deleteOne(filter);
             res.send(result);
         })
 
