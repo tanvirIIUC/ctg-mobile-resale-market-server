@@ -93,7 +93,26 @@ async function run() {
                  res.send({
                     clientSecret: paymentIntent.client_secret,
                   });
+        });
+
+        app.post('/payments', async(req,res)=>{
+            const payment = req.body;
+            const result = await paymentCollection.insertOne(payment);
+            const id = payment.bookingId
+            const filter = {_id: ObjectId(id)}
+            const updateDoc ={
+                $set : {
+                    paid: true
+                }
+            }
+            const updatedResult = await bookingCollection.updateOne(filter,updateDoc)
+            // const updated = await mobileCollection.updateOne(filter,updateDoc)
+            res.send(result);
         })
+
+        
+
+
         
 
 
