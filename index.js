@@ -2,7 +2,8 @@ const express = require('express')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const cors = require('cors');
-require('dotenv').config()
+require('dotenv').config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET);
 
 const port = process.env.PORT || 5000;
 
@@ -27,6 +28,7 @@ async function run() {
         const mobileCollection = client.db('ctg_mobile_resale-market').collection('mobile_collection');
         const bookingCollection = client.db('ctg_mobile_resale-market').collection('book_collection');
         const usersCollection = client.db('ctg_mobile_resale-market').collection('users');
+        const paymentCollection = client.db('ctg_mobile_resale-market').collection('payments');
 
 
 
@@ -73,6 +75,26 @@ async function run() {
             const result = await bookingCollection.insertOne(booking);
             res.send(result)
         });
+
+        //payment
+        app.post("/create-payment-intent", async (req, res) => {
+                 const booking = req.body;
+                 const price = booking.price;
+                 const amount = price*100;
+
+                 const paymentIntent = await stripe.paymentIntents.create({
+
+                    currency: "usd",
+                    amount : amount,
+                    "payment_method_types": [
+                        "card"
+                      ]
+                 });
+                 res.send({
+                    clientSecret: paymentIntent.client_secret,
+                  });
+        })
+        
 
 
         app.post('/addproduct', async (req, res) => {
@@ -202,6 +224,12 @@ async function run() {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
             const result = await bookingCollection.deleteOne(filter);
+            res.send(result);
+        })
+        app.get('/bookingpay/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await bookingCollection.findOne(filter);
             res.send(result);
         })
 
